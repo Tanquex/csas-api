@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { CreateTaskDto } from "../dto/create-task.dto";
 
 @Injectable()
 export class TaskService {
@@ -8,20 +9,20 @@ export class TaskService {
     }
 
     public getTaskById(id: number): string {
-        return 'tarea con ID: ${id}';
+        return `tarea con ID: ${id}`;
 
     }
 
-    public insertTask(task: string): string {
+    public insertTask(task: any): any {
         return task;
     }
 
     public updateTask(id: number, task: string): string {
-        return 'tarea con ID: ${id} actualizada a: ${task}';
+        return `tarea con ID: ${id} actualizada a: ${task}`;
     }
 
     public deleteTask(id: number): string {
-        return 'tarea eliminada id: ${id}'
+        return `tarea eliminada id: ${id}`
     }
 
 }
