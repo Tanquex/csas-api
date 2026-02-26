@@ -1,11 +1,23 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CreateTaskDto } from "../dto/create-task.dto";
+import { Client } from "pg";
+import { task } from "../entities/task.entity";
 
 @Injectable()
 export class TaskService {
 
-    public listadoTareas(): string {
-        return "Listado de Tareas "
+    constructor(
+        @Inject('MYSQL_CONNECTION') private mysqlConnection: any,
+        @Inject('PostgreSQL_CONNECTION') private pg:Client
+    ){
+
+    }
+
+    public async listadoTareas(): Promise<task[]> {
+        const query =`select * from tasks Order by name asc `;
+        const [res]= await this.mysqlConnection.query(query);
+        console.log(res);
+        return res as task[];
     }
 
     public getTaskById(id: number): string {

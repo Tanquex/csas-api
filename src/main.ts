@@ -14,3 +14,14 @@ async function bootstrap() {
  
 }
 bootstrap();
+
+//mysql
+//! npm i mysql2
+//! npm i @types/mysql -D
+
+//Postgres
+//npm i pg
+//npm i @types/pg -D
+
+//26-feb-26
+// git commit -a -m "fix:conexion a base de datos (mysql y postgres ) con uso de providers"

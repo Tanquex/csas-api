@@ -9,7 +9,7 @@ export class TaskController{
     constructor(private taskSvc: TaskService){}
 
     @Get()
-    public listadoTareas():string{
+    async listadoTareas():Promise<any[]>{
             return this.taskSvc.listadoTareas();
         }
 
