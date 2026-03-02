@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { TaskService } from "./task.service";
 import { CreateTaskDto } from "../dto/create-task.dto";
+import { task } from "../entities/task.entity";
+import { updateTaskDto } from "../dto/update-task.dto";
 
 
 @Controller('api/task')
@@ -9,31 +11,43 @@ export class TaskController{
     constructor(private taskSvc: TaskService){}
 
     @Get()
-    async listadoTareas():Promise<any[]>{
+    async listadoTareas():Promise<task[]>{
             return this.taskSvc.listadoTareas();
         }
 
 
     @Get(":id")
-    public listTaskById(@Param("id") id:string){
-        
-        return this.taskSvc.getTaskById(parseInt(id));
+    public async listTaskById(@Param("id", ParseIntPipe) id:number): Promise<task[]>{
+        const result= await this.taskSvc.getTaskById(id);
+        console.log("tipo de dato: ",typeof result)
+        if (result==undefined){
+            throw new HttpException(`Tarea con id ${id} no encontrada`,HttpStatus.NOT_FOUND);
+            return result;
+        }
+        return result;
     }
 
     @Post()
-    public insertTask(@Body() task: CreateTaskDto): any{
-        console.error("insertTask",typeof task)
-        return this.taskSvc.insertTask(task);
+    public async insertTask(@Body() task: CreateTaskDto): Promise<task[]>{
+        const result= await this.taskSvc.insertTask(task);
+        if (result==undefined)
+            throw new HttpException(`Tarea No Registrada`,HttpStatus.INTERNAL_SERVER_ERROR)
+        return result;
+        
+
     }
 
-    @Put(":id")
-    public updateTask(id:number,task:any){
-        return this.taskSvc.updateTask(id,task);
-    }
+    // @Put(":id")
+    // public async updateTask(@Param("id", ParseIntPipe) id:number,@Body() task:updateTaskDto):Promise<task[]>{
+    //     return await this.taskSvc.updateTask(id,task);
+    // }
 
     @Delete(":id")
-    public deleteTask(id:number){
-        return this.taskSvc.deleteTask(id);
+    public async deleteTask(@Param("id",ParseIntPipe) id:number): Promise<Boolean>{
+        const result= this.taskSvc.deleteTask(id);
+        if(!result)
+            throw new HttpException(`No se puede Eliminar la tarea`,HttpStatus.NOT_FOUND)
+        return result;
     }
 
 
