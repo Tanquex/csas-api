@@ -43,3 +43,6 @@ bootstrap();
 
 //2 de marzo
 //git commit -a -m "fix:CRUD funcional con bases de datos y configuracion de swwager"
+
+//5 marzo 
+// git commit -a -m "fix:uso de prisma y correcion de tareas 

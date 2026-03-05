@@ -21,38 +21,34 @@ export class TaskService {
         return res as task[];
     }
 
-    public async getTaskById(id: number): Promise<task[]> {
-         const query =`select * from tasks where id=${id} `;
-         const [res]= await this.mysqlConnection.query(query);
-        console.log(res);
-        return res[0] as task[];
-
-    }
-
-    public async insertTask(@Body() task: CreateTaskDto): Promise<task[]>  {
-        const sql= `Insert into tasks(name,description,priority,user_id) values('${task.name}','${task.description}','${task.priority}','${task.user_id}')`;
-        const [result]= await this.mysqlConnection.query(sql);
-        const insertId=result.insertId;
-        return await this.getTaskById(insertId);
-        
-    }
-
-    public async updateTask(id:number,taskUpdate: updateTaskDto): Promise<task[]> {
-        const task= await this.getTaskById(id);
-        task.name=taskUpdate.name ?? task.name;
-        task.description=taskUpdate.description ?? task.description;
-        task.priority=taskUpdate.priority ?? task.priority;
-
-        const query=`update tasks set name='${task.name} ', description='${task.description} ',priority='${task.priority} ' `;
-        await this.mysqlConnection.query(query);
+    public async getTaskById(id: number): Promise<task> {
+        const task= await this.prisma.task.findUnique({
+            where:{id}
+        });
         return task;
+
     }
 
-    public deleteTask(id: number): boolean {
-        const query=`Delete from tasks where id=${id}`;
-        const[result]= this.mysqlConnection.query(query);
+    public async insertTask(@Body() task: CreateTaskDto): Promise<task>  {
+        const newTask=await this.prisma.task.create({
+            data:task
+        });
+        return newTask;
         
-        return result.affectedRows>0 ;
+    }
+
+    public async updateTask(id:number,taskUpdate: updateTaskDto): Promise<task> {
+        const task=await this.primsa.task.update({
+            where:{id},
+            data: taskUpdate
+        });
+    }
+
+    public async deleteTask(id: number): Promise<task> {
+        const task=await this.prisma.task.delete({
+            where:{id}
+        });
+        return task;
     }
 
 }

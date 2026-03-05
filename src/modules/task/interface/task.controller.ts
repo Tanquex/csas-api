@@ -17,7 +17,7 @@ export class TaskController{
 
 
     @Get(":id")
-    public async listTaskById(@Param("id", ParseIntPipe) id:number): Promise<task[]>{
+    public async listTaskById(@Param("id", ParseIntPipe) id:number): Promise<task>{
         const result= await this.taskSvc.getTaskById(id);
         console.log("tipo de dato: ",typeof result)
         if (result==undefined){
@@ -28,7 +28,7 @@ export class TaskController{
     }
 
     @Post()
-    public async insertTask(@Body() task: CreateTaskDto): Promise<task[]>{
+    public async insertTask(@Body() task: CreateTaskDto): Promise<task>{
         const result= await this.taskSvc.insertTask(task);
         if (result==undefined)
             throw new HttpException(`Tarea No Registrada`,HttpStatus.INTERNAL_SERVER_ERROR)
@@ -44,10 +44,14 @@ export class TaskController{
 
     @Delete(":id")
     public async deleteTask(@Param("id",ParseIntPipe) id:number): Promise<Boolean>{
-        const result= this.taskSvc.deleteTask(id);
-        if(!result)
-            throw new HttpException(`No se puede Eliminar la tarea`,HttpStatus.NOT_FOUND)
-        return result;
+        try{
+            await this.taskSvc.deleteTask(id);
+
+        }catch(error){
+            throw new HttpException("task not found",HttpStatus.NOT_FOUND);
+
+        }
+        return true;
     }
 
 
