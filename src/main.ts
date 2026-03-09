@@ -46,3 +46,9 @@ bootstrap();
 
 //5 marzo 
 // git commit -a -m "fix:uso de prisma y correcion de tareas 
+
+//9 de marzo
+// git commit -a -m "fix:CRUD de usuarios y creacion de rutas para autenticacion"
+//BCRYPt
+//npm i bcrypt
+//npm i -D @types/bcrypt

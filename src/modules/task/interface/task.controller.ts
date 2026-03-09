@@ -37,10 +37,10 @@ export class TaskController{
 
     }
 
-    // @Put(":id")
-    // public async updateTask(@Param("id", ParseIntPipe) id:number,@Body() task:updateTaskDto):Promise<task[]>{
-    //     return await this.taskSvc.updateTask(id,task);
-    // }
+    @Put(":id")
+    public async updateTask(@Param("id", ParseIntPipe) id:number,@Body() task:updateTaskDto):Promise<task>{
+        return await this.taskSvc.updateTask(id,task);
+    }
 
     @Delete(":id")
     public async deleteTask(@Param("id",ParseIntPipe) id:number): Promise<Boolean>{

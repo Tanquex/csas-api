@@ -3,25 +3,29 @@ import { CreateTaskDto } from "../dto/create-task.dto";
 import { Client } from "pg";
 import { task } from "../entities/task.entity";
 import { updateTaskDto } from "../dto/update-task.dto";
+import { PrismaService } from "src/common/services/prisma.service";
 
 @Injectable()
 export class TaskService {
 
     constructor(
         @Inject('MYSQL_CONNECTION') private mysqlConnection: any,
-        @Inject('PostgreSQL_CONNECTION') private pg:Client
+        @Inject('PostgreSQL_CONNECTION') private pg:Client,
+        private prisma:PrismaService
     ){
 
     }
 
     public async listadoTareas(): Promise<task[]> {
-        const query =`select * from tasks Order by name asc `;
-        const [res]= await this.mysqlConnection.query(query);
-        console.log(res);
-        return res as task[];
+        
+        const tasks= await this.prisma.task.findMany({
+            orderBy:[{name:"asc"}]
+        });
+        
+        return tasks;
     }
 
-    public async getTaskById(id: number): Promise<task> {
+    public async getTaskById(id: number): Promise<task |null> {
         const task= await this.prisma.task.findUnique({
             where:{id}
         });
@@ -37,11 +41,12 @@ export class TaskService {
         
     }
 
-    public async updateTask(id:number,taskUpdate: updateTaskDto): Promise<task> {
-        const task=await this.primsa.task.update({
+    public async updateTask(id:number,taskUpdate: updateTaskDto): Promise<task  > {
+        const task=await this.prisma.task.update({
             where:{id},
             data: taskUpdate
         });
+        return task;
     }
 
     public async deleteTask(id: number): Promise<task> {
