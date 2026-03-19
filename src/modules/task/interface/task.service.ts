@@ -10,7 +10,7 @@ export class TaskService {
 
     constructor(
         @Inject('MYSQL_CONNECTION') private mysqlConnection: any,
-        @Inject('PostgreSQL_CONNECTION') private pg:Client,
+        
         private prisma:PrismaService
     ){
 

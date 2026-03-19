@@ -2,41 +2,32 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/commo
 import { AuthService } from "./auth.service";
 import { LoginDto } from "../dto/login.dto";
 
-@Controller('api/auth')
-export class AuthController{
+@Controller("api/auth")
+export class AuthController {
+  constructor(private authSvc: AuthService) {}
 
-    constructor(private authSvc: AuthService){}
+  @Post("/login")
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto) {
+    const { username, password } = loginDto;
+    return this.authSvc.login(username, password);
+  }
 
-    //Post /auth/register -201 Created
-    @Post("/login")
-    @HttpCode(HttpStatus.OK)
-    public login(@Body() loginDto:LoginDto):string{
-        const {username,password}=loginDto;
+  @Post("/refresh")
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(@Body() body: { userId: number; refreshToken: string }) {
+    return this.authSvc.refreshTokens(body.userId, body.refreshToken);
+  }
 
-        //TODO: verificar el usuario y contraseña
+  @Post("/logout")
+  @HttpCode(HttpStatus.OK)
+  async logout(@Body() body: { userId: number }) {
+    return this.authSvc.logout(body.userId);
+  }
 
-        //TODO: Obtener la informacion del usuario payload
-
-        //TODO: Generar el token JWT
-
-        //TODO: Devolver el token jwt encriptado
-
-            return this.authSvc.login();
-        }
-    
-    
-
-    @Get("/me")
-    public getProfile(){
-
-    }
-
-    @Post("/refresh")
-    public refreshToken(){
-
-    }
-    @Post("/logout")
-    public logout(){
-
-    }
+  @Get("/me")
+  getProfile() {
+    // Aquí después conectas el JwtAuthGuard para leer el usuario del token
+    return { message: "endpoint /me pendiente de guard" };
+  }
 }

@@ -3,6 +3,7 @@ export class user {
     name: string
     lastname: string
     username: string
-    password: string
+    password?: string
+    refreshToken?: string | null
     created_at: Date
 }

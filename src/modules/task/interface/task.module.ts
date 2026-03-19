@@ -10,7 +10,6 @@ import { PrismaService } from "src/common/services/prisma.service";
     controllers: [TaskController],
     providers: [TaskService,
         mysqlProvider,
-        pgProvider,
         PrismaService
     ]
 })

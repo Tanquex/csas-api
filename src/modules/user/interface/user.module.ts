@@ -14,7 +14,8 @@ import { UtilService } from "src/common/services/util.service";
         pgProvider,
         PrismaService,
         UtilService
-    ]
+    ],
+    exports: [UserService]
 })
 export class UserModule {
     

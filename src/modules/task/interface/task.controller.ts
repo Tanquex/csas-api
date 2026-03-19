@@ -22,7 +22,7 @@ export class TaskController{
         console.log("tipo de dato: ",typeof result)
         if (result==undefined){
             throw new HttpException(`Tarea con id ${id} no encontrada`,HttpStatus.NOT_FOUND);
-            return result;
+            
         }
         return result;
     }

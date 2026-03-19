@@ -6,7 +6,8 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  //output   = "../generated/prisma"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -19,6 +20,7 @@ model User{
   lastname String @db.VarChar(300)
   username String @db.VarChar(100)
   password String @db.LongText
+  refreshToken String?  @db.LongText
   created_at DateTime @default(now())
   task Task[]
 }
