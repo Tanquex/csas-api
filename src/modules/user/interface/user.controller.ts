@@ -1,13 +1,15 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { user } from "../entities/user.entity";
 import { CreateUserDto } from "../dto/create-user.dto";
 import { updateUserDto } from "../dto/update-user.dto";
 import { UtilService } from "src/common/services/util.service";
+import { AuthGuard } from "src/common/guards/auth.guard";
 
 
 
 @Controller('api/user')
+@UseGuards(AuthGuard)
 export class UserController{
 
     constructor(private userSvc: UserService, private readonly utilService: UtilService){}

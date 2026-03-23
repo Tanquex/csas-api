@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { UtilService } from "src/common/services/util.service";
 import { UserService } from "src/modules/user/interface/user.service";
 import { PrismaService } from "src/common/services/prisma.service";
+import { User } from "@prisma/client";
 
 @Injectable()
 export class AuthService {
@@ -77,4 +78,11 @@ export class AuthService {
     });
     return { message: "Sesión cerrada correctamente" };
   }
+
+  public async getUserByName(username:string):Promise<User | null>{
+    return await this.prisma.user.findFirst({
+      where:{username}
+    });
+  }
+  
 }

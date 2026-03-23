@@ -10,7 +10,11 @@ import { PrismaService } from "src/common/services/prisma.service";
   controllers: [AuthController],
   providers: [AuthService, UserService, UtilService, PrismaService],
   imports: [
-    JwtModule.register({}), // secrets se pasan por sign() usando process.env
+    JwtModule.register({
+      signOptions: { expiresIn: '60s' },
+
+    }),
+     // secrets se pasan por sign() usando process.env
   ],
 })
 export class AuthModule {}

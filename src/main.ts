@@ -52,3 +52,5 @@ bootstrap();
 //BCRYPt
 //npm i bcrypt
 //npm i -D @types/bcrypt
+
+//git commit -a -m "fix: inicio de sesion completo y proteccion de rutas"

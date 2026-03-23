@@ -66,7 +66,7 @@ export class UserService {
     }
     public async getUserByUsername(username: string): Promise<user | null> {
         return this.prisma.user.findFirst({
-            where: { username }, // Asegúrate que en tu esquema de Prisma username sea único
+            where: { username }, 
         });
     }
 
