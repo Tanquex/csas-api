@@ -25,7 +25,7 @@ export class CreateUserDto{
     @MaxLength(100)
     password: string; 
 
-    @IsDate()
+    // @IsDate()
     
-    created_at: Date; 
+    // created_at: Date; 
 }

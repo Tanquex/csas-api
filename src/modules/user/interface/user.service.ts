@@ -43,7 +43,7 @@ export class UserService {
                 lastname: true,
                 username: true,
                 password: false,
-                created_at: true
+                
             }
         });
         return newUser;

@@ -1,7 +1,9 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UnauthorizedException } from "@nestjs/common";
+import { Body, Controller, ForbiddenException, Get, HttpCode, HttpStatus, Post, Req, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "../dto/login.dto";
 import { UtilService } from "src/common/services/util.service";
+import { AuthGuard } from "src/common/guards/auth.guard";
+import { access } from "fs";
 
 @Controller("api/auth")
 export class AuthController {
@@ -32,6 +34,7 @@ export class AuthController {
     return { message: "endpoint /me pendiente de guard" };
   }
   
+  //////////////////////////////////////////////////////////
   // Version Profe
   
    @Post("/loginn")
@@ -48,15 +51,20 @@ export class AuthController {
       const{password,username,...payload}=user
 
       //Generar jwt
-      const access_token = await this.uitlService.generateJWT(payload);
+      const access_token = await this.uitlService.generateJWT(payload, '1h');
 
       //generar refresh token
       const refresh_token = await this.uitlService.generateJWT(payload,'7d');
+      const hashRT = await this.uitlService.hashPassword(refresh_token);
+
+      //asignar hash al usuer
+      await this.authSvc.updateHash(user.id,hashRT)
+      payload.hash=hashRT
 
       //devolver jwt encriptado
       return{
         access_token,
-        refresh_token
+        refresh_token: hashRT
       }
 
     }else{
@@ -68,5 +76,45 @@ export class AuthController {
     return this.authSvc.login(username, password);
 
   }
+
+  @Get("/mee")
+  @UseGuards(AuthGuard)
+  public getProfilee(@Req() request: any){
+    const user= request['user'];
+    return user;
+  }
+
+  @Post("/refreshs")
+    @UseGuards(AuthGuard)
+  public async refreshTokenn(@Req() request: any){
+    //obtener el user en sesion
+    const sessionUser = request ['user'];
+    const user= await this.authSvc.getUserById(sessionUser.id);
+    if (!user || !user.hash) throw new ForbiddenException('Acceso Denegado')
+
+    //combarar el token recibido con el token guardado
+    if(sessionUser.hash != user.hash) throw new ForbiddenException('Token Invalido');
+
+
+    //si el token es valido se generan nuevos tokens
+    return{
+      access_token:'',
+      refresh_token:''
+    }
+
+
+  }
+
+  @Post("/logout")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
+  async logoutt(@Req() request:any) {
+    const session=request['user'];
+    const user = await this.authSvc.updateHash(session.id,null);
+    return user;
+
+  }
   
 }
+
+//git commit -a -m "bug: correcion de inisio de sesion y configuracion de rutas (me, logout, refresh)"
