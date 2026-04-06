@@ -24,6 +24,7 @@ model User{
   refreshToken String?  @db.LongText
   created_at DateTime @default(now())
   task Task[]
+  logs Logs[]
 }
 
 model Task{
@@ -34,4 +35,16 @@ model Task{
   user_id Int
   created_at DateTime @default(now())
   user User @relation(fields: [user_id], references: [id])
+}
+
+model Logs{
+  id Int @default(autoincrement()) @id 
+  statusCode Int
+  timestamp DateTime
+  path String @db.MediumText()
+  error String @db.MediumText()
+  errorCode String @db.MediumText()
+  session_id Int?
+
+  user User? @relation(fields: [session_id], references: [id])
 }

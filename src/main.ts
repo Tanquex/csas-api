@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AllExceptionfilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +11,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // Elimina propiedades no definidas en el DTO
   }));
+
+  //Uso de filtros de forma globlas
+  app.useGlobalFilters(new AllExceptionfilter());
 
   //COnfiguracion de swagger
   const config = new DocumentBuilder()
@@ -54,3 +58,5 @@ bootstrap();
 //npm i -D @types/bcrypt
 
 //git commit -a -m "fix: inicio de sesion completo y proteccion de rutas"
+
+//git commit -a -m "fix:uso de custom errors y crecion de logs"

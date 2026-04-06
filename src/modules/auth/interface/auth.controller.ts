@@ -4,6 +4,7 @@ import { LoginDto } from "../dto/login.dto";
 import { UtilService } from "src/common/services/util.service";
 import { AuthGuard } from "src/common/guards/auth.guard";
 import { access } from "fs";
+import { AppException } from "src/common/exceptions/app.exceptions";
 
 @Controller("api/auth")
 export class AuthController {
@@ -41,7 +42,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async loginn(@Body() loginDto: LoginDto):Promise<any> {
     const { username, password } = loginDto;
-//verificar usuario y contra
+
+    //verificar usuario y contra
     const user =await this.authSvc.getUserByName(username);
     if(!user)
       throw new UnauthorizedException('El usuario o contra es incorrecta ')
@@ -90,7 +92,9 @@ export class AuthController {
     //obtener el user en sesion
     const sessionUser = request ['user'];
     const user= await this.authSvc.getUserById(sessionUser.id);
-    if (!user || !user.hash) throw new ForbiddenException('Acceso Denegado')
+    if (!user || !user.hash) 
+      throw new AppException("Token Invalido",HttpStatus.FORBIDDEN,'2')
+      //throw new ForbiddenException('Acceso Denegado')
 
     //combarar el token recibido con el token guardado
     if(sessionUser.hash != user.hash) throw new ForbiddenException('Token Invalido');

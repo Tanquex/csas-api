@@ -12,6 +12,7 @@ import { PrismaService } from "src/common/services/prisma.service";
   imports: [
     JwtModule.register({
       signOptions: { expiresIn: '60s' },
+      secret: process.env.JWT_ACCESS_SECRET || process.env.JWT_ACCESS_SECRET,
 
     }),
      // secrets se pasan por sign() usando process.env
