@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { user } from "../entities/user.entity";
 import { CreateUserDto } from "../dto/create-user.dto";
@@ -50,7 +50,18 @@ export class UserController{
     }
 
     @Delete(":id")
-    public async deleteUser(@Param("id",ParseIntPipe) id:number): Promise<Boolean>{
+    public async deleteUser(@Param("id",ParseIntPipe) id:number,@Req() request: Request): Promise<Boolean>{
+
+        const currentUser = request['user']; // viene del AuthGuard
+
+    // No borra el que esta logeado
+    if (currentUser?.id === id) {
+        throw new HttpException(
+            "No puedes eliminar tu propio usuario",
+            HttpStatus.FORBIDDEN
+        );
+    }
+
         try{
             await this.userSvc.deleteUser(id);
 
