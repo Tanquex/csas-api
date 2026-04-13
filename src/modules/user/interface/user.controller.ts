@@ -17,6 +17,7 @@ export class UserController{
     @Get()
     async listadoUsuarios():Promise<user[]>{
             return this.userSvc.listadoUsuarios();
+            
         }
 
 

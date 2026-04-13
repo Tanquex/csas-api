@@ -16,9 +16,12 @@ export class TaskService {
 
     }
 
-    public async listadoTareas(): Promise<task[]> {
+    public async listadoTareas(userId: number): Promise<task[]> {
         
         const tasks= await this.prisma.task.findMany({
+            where: {
+            user_id: userId // 🔥 CLAVE
+        },
             orderBy:[{name:"asc"}]
         });
         

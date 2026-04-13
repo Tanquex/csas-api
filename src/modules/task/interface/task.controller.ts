@@ -14,8 +14,9 @@ export class TaskController{
     constructor(private taskSvc: TaskService){}
 
     @Get()
-    async listadoTareas():Promise<task[]>{
-            return this.taskSvc.listadoTareas();
+    async listadoTareas(@Req() req):Promise<task[]>{
+        const userId = req.user.id;
+            return this.taskSvc.listadoTareas(userId);
         }
 
 
