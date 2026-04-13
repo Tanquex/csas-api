@@ -33,9 +33,12 @@ export class TaskService {
 
     }
 
-    public async insertTask(@Body() task: CreateTaskDto): Promise<task>  {
+    public async insertTask(@Body() task: CreateTaskDto,userId: number): Promise<task>  {
         const newTask=await this.prisma.task.create({
-            data:task
+            data:{
+                ...task,
+                user_id:userId
+            }
         });
         return newTask;
         

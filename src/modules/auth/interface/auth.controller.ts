@@ -10,30 +10,30 @@ import { AppException } from "src/common/exceptions/app.exceptions";
 export class AuthController {
   constructor(private authSvc: AuthService,private readonly uitlService:UtilService) {}
 
-  @Post("/login")
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto) {
-    const { username, password } = loginDto;
-    return this.authSvc.login(username, password);
-  }
+  // @Post("/login")
+  // @HttpCode(HttpStatus.OK)
+  // async login(@Body() loginDto: LoginDto) {
+  //   const { username, password } = loginDto;
+  //   return this.authSvc.login(username, password);
+  // }
 
-  @Post("/refresh")
-  @HttpCode(HttpStatus.OK)
-  async refreshToken(@Body() body: { userId: number; refreshToken: string }) {
-    return this.authSvc.refreshTokens(body.userId, body.refreshToken);
-  }
+  // @Post("/refresh")
+  // @HttpCode(HttpStatus.OK)
+  // async refreshToken(@Body() body: { userId: number; refreshToken: string }) {
+  //   return this.authSvc.refreshTokens(body.userId, body.refreshToken);
+  // }
 
-  @Post("/logout")
-  @HttpCode(HttpStatus.OK)
-  async logout(@Body() body: { userId: number }) {
-    return this.authSvc.logout(body.userId);
-  }
+  // @Post("/logout")
+  // @HttpCode(HttpStatus.OK)
+  // async logout(@Body() body: { userId: number }) {
+  //   return this.authSvc.logout(body.userId);
+  // }
 
-  @Get("/me")
-  getProfile() {
+  // @Get("/me")
+  // getProfile() {
     
-    return { message: "endpoint /me pendiente de guard" };
-  }
+  //   return { message: "endpoint /me pendiente de guard" };
+  // }
   
   //////////////////////////////////////////////////////////
   // Version Profe
@@ -73,9 +73,7 @@ export class AuthController {
       throw new UnauthorizedException('El usuario o contra es incorrecta ')
     }
 
-
-
-    return this.authSvc.login(username, password);
+    // return this.authSvc.login(username, password);
 
   }
 

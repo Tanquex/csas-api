@@ -3,9 +3,16 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AllExceptionfilter } from './common/filters/http-exception.filter';
+import { LogsService } from './common/services/logs.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin:'http://localhost:4200',
+    methods:'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials:true,
+  });
 
    //Uso de pipes de Forma global
   app.useGlobalPipes(new ValidationPipe({
@@ -13,7 +20,8 @@ async function bootstrap() {
   }));
 
   //Uso de filtros de forma globlas
-  app.useGlobalFilters(new AllExceptionfilter());
+  const logsService = app.get(LogsService);
+  app.useGlobalFilters(new AllExceptionfilter(logsService));
 
   //COnfiguracion de swagger
   const config = new DocumentBuilder()

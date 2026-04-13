@@ -1,11 +1,14 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { TaskService } from "./task.service";
 import { CreateTaskDto } from "../dto/create-task.dto";
 import { task } from "../entities/task.entity";
 import { updateTaskDto } from "../dto/update-task.dto";
+import { AuthGuard } from "src/common/guards/auth.guard";
+
 
 
 @Controller('api/task')
+@UseGuards(AuthGuard)
 export class TaskController{
 
     constructor(private taskSvc: TaskService){}
@@ -28,8 +31,9 @@ export class TaskController{
     }
 
     @Post()
-    public async insertTask(@Body() task: CreateTaskDto): Promise<task>{
-        const result= await this.taskSvc.insertTask(task);
+    public async insertTask(@Body() task: CreateTaskDto,@Req() req): Promise<task>{
+        const userId = req.user.id; 
+        const result= await this.taskSvc.insertTask(task,userId);
         if (result==undefined)
             throw new HttpException(`Tarea No Registrada`,HttpStatus.INTERNAL_SERVER_ERROR)
         return result;

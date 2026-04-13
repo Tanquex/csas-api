@@ -1,10 +1,12 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
 import { Request, Response } from "express";
 import { timestamp } from "rxjs";
+import { LogsService } from "../services/logs.service";
 
 @Catch()
 export class AllExceptionfilter implements ExceptionFilter{
-    catch(exception: any, host: ArgumentsHost) {
+    constructor(private readonly logsService: LogsService) {}
+    async catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request= ctx.getRequest<Request>();
@@ -18,6 +20,23 @@ export class AllExceptionfilter implements ExceptionFilter{
         : 'Internal Server Error';
 
         // FIXME: almacenar en la base de datos
+        const errorText = typeof message == 'string'
+            ? message
+            : (message as any).message || JSON.stringify(message);
+
+        const errorCode = exception.code || exception.name || 'UNKNOWN_ERROR';
+
+        // 
+        const user = (request as any).user;
+
+       this.logsService.createLog({
+            statusCode: status,
+            path: request.url,
+            error: errorText,
+            errorCode: errorCode,
+            session_id: user?.sub || null
+        }).catch(err => console.error('Error guardando log:', err));
+
 
         //respuesta del servidor
         response.status(status).json({
